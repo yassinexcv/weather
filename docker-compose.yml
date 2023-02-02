@@ -1,0 +1,41 @@
+
+# la version de docker-compose que vous utilisez
+version: "3.8"
+#  les services que vous voulez lancer
+services:
+#  le nom du service
+  client:
+#  le nom de l'image que vous voulez utiliser
+    build: client
+#  le nom du container
+    container_name: client
+#  les ports que vous voulez ouvrir
+    ports:
+      - 19006:19006
+#  les volumes que vous voulez partager
+    stdin_open: true
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+    depends_on:
+      - server
+
+  server:
+    build: server
+    container_name: server
+    ports:
+      - 5000:5000
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    expose:
+      - 27017
